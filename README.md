@@ -48,19 +48,22 @@ conda activate te_analysis
 
 2. Example configuration:
 ```yaml
-# Sample information
+# Sample information - list ALL samples for processing
 samples:
   - sample1
   - sample2
   - sample3
+  - sample4
 
-# Sample groups for differential expression analysis
-treatment_samples:
+# Sample groups for differential expression analysis 
+# CRITICAL: These define which samples are test vs. control for TEtranscripts
+treatment_samples:  # Test/treatment group
   - sample2
   - sample3
 
-control_samples:
+control_samples:    # Control/reference group
   - sample1
+  - sample4
 
 # Reference and annotation files
 reference_genome: "/path/to/genome.fa"
@@ -69,6 +72,10 @@ star_index: "/path/to/star_index"
 
 # RepeatMasker settings
 repeatmasker_species: "human"  # CRITICAL: Must match your organism (human, mouse, rat, etc.)
+
+# TEtranscripts parameters
+tetranscripts_mode: "multi"        # Options: uniq (unique mappers only), multi (include multi-mappers)
+tetranscripts_stranded: "reverse"  # Options: no (unstranded), forward, reverse (use reverse for standard Illumina libraries)
 
 # Computational resources
 threads:
@@ -276,6 +283,43 @@ Here's the step-by-step process to run the entire pipeline from start to finish:
    snakemake --profile <your_cluster_profile>
    ```
 
+## TEtranscripts Sample Groups
+
+TEtranscripts performs differential expression analysis between test and control groups. Here's how the pipeline handles sample groups:
+
+1. In your `config.yaml`, you define two groups:
+   ```yaml
+   # These samples are your experimental/treatment condition
+   treatment_samples:
+     - treated_sample1
+     - treated_sample2
+     
+   # These samples are your baseline/control condition
+   control_samples:
+     - control_sample1
+     - control_sample2
+   ```
+
+2. The Snakemake workflow automatically:
+   - Passes all treatment samples as the `-t` parameter to TEtranscripts
+   - Passes all control samples as the `-c` parameter to TEtranscripts
+   - Example command that gets executed:
+     ```bash
+     TEtranscripts -t results/star/treated_sample1/Aligned.sortedByCoord.out.bam results/star/treated_sample2/Aligned.sortedByCoord.out.bam \
+                  -c results/star/control_sample1/Aligned.sortedByCoord.out.bam results/star/control_sample2/Aligned.sortedByCoord.out.bam \
+                  --GTF /path/to/gene_annotation.gtf \
+                  --TE resources/repeatmasker/TE.gtf \
+                  --mode multi \
+                  --outdir results/tetranscripts/differential
+     ```
+
+3. TEtranscripts calculates:
+   - Log2 fold change (treatment vs. control)
+   - P-values and adjusted p-values
+   - For both genes and TE families
+
+**Note**: Make sure your treatment and control groups are correctly assigned in the config.yaml file, as this directly determines how differential expression analysis is performed.
+
 ## Output
 
 The pipeline generates the following outputs:
@@ -283,6 +327,8 @@ The pipeline generates the following outputs:
 - `results/star/`: STAR alignment files (BAM and indices)
 - `results/repeatmasker/`: RepeatMasker TE annotations
 - `results/tetranscripts/differential/`: Differential abundance analysis results
+  - `TEcount.cntTable`: Raw count table for genes and TEs
+  - `TEcount.DE_results`: Differential expression results with log2FC and p-values
 - `results/multiqc/multiqc_report.html`: Quality control report
 
 ### Analyzing Results
