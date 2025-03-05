@@ -1,0 +1,46 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+authors:
+  - family-names: "Wang"
+    given-names: "Leran"
+    orcid: "https://orcid.org/YOUR-ORCID-ID"  # Replace with your ORCID if you have one
+title: "TE-Analysis-Pipeline"
+version: 1.0.0
+date-released: 2025-03-05
+url: "https://github.com/yourusername/te-analysis-pipeline"
+repository-code: "https://github.com/yourusername/te-analysis-pipeline"
+license: "MIT"
+description: "A Snakemake pipeline for transposable element analysis in RNA-seq data using STAR, RepeatMasker, and TEtranscripts"
+keywords:
+  - transposable-elements
+  - rna-seq
+  - bioinformatics
+  - differential-expression
+  - repeatmasker
+  - tetranscripts
+  - snakemake
+references:
+  - authors:
+      - family-names: "Jin"
+        given-names: "Y"
+      - family-names: "Tam"
+        given-names: "OH" 
+      - family-names: "Paniagua"
+        given-names: "E"
+      - family-names: "Hammell"
+        given-names: "M"
+    title: "TEtranscripts: a package for including transposable elements in differential expression analysis of RNA-seq datasets"
+    type: article
+    doi: "10.1093/bioinformatics/btv422"
+    year: 2015
+    journal: "Bioinformatics"
+  - authors:
+      - family-names: "Köster"
+        given-names: "Johannes"
+      - family-names: "Rahmann"
+        given-names: "Sven"
+    title: "Snakemake—a scalable bioinformatics workflow engine"
+    type: article
+    doi: "10.1093/bioinformatics/bts480"
+    year: 2012
+    journal: "Bioinformatics"
