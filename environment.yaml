@@ -1,0 +1,15 @@
+name: te_analysis
+channels:
+  - bioconda
+  - conda-forge
+  - defaults
+dependencies:
+  - snakemake=7.32.4
+  - star=2.7.10b
+  - repeatmasker=4.1.5
+  - samtools=1.18
+  - multiqc=1.14
+  - python=3.10
+  - pip=23.0.1
+  - pip:
+    - TEtranscripts==2.2.3
