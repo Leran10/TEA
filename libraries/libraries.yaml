@@ -1,0 +1,37 @@
+# CRISPR library definitions
+# Maps library names to file paths and provides trimming parameters
+
+# Human libraries
+GeCKOv2_Human:
+  path: "libraries/GeCKOv2_Human.txt"
+  description: "Human genome-wide CRISPR knockout library (6 sgRNAs per gene)"
+  vector_sequence: "CACCG"
+  backbone_sequence: "GTTTAAGAGC"
+  min_length: 20
+  max_length: 20
+
+Brunello_Human:
+  path: "libraries/Brunello_Human.txt"
+  description: "Human genome-wide CRISPR knockout library (4 sgRNAs per gene)"
+  vector_sequence: "AAACACCG" 
+  backbone_sequence: "GTTTAAGAGC"
+  min_length: 20
+  max_length: 20
+
+# Mouse libraries
+GeCKOv2_Mouse:
+  path: "libraries/GeCKOv2_Mouse.txt"
+  description: "Mouse genome-wide CRISPR knockout library (6 sgRNAs per gene)"
+  vector_sequence: "CACCG"
+  backbone_sequence: "GTTTAAGAGC"
+  min_length: 20
+  max_length: 20
+
+# Additional libraries can be added here
+CP0041_GW_KO:
+  path: "CP0041_GW_KO_mageck.txt"
+  description: "Custom CRISPR knockout library from your project"
+  vector_sequence: "GAAACACCG"
+  backbone_sequence: "GTTTTAGA"
+  min_length: 20
+  max_length: 20

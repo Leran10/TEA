@@ -1,0 +1,48 @@
+# Snakemake working directories
+.snakemake/
+results/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Output files
+*.fastq
+*.fq
+*.fastq.gz
+*.fq.gz
+*.bam
+*.sam
+*.out
+
+# Logs
+logs/
+*.log
+
+# System files
+.DS_Store
+.idea/
+.vscode/
+*.swp
+*~
+
+# Conda environments
+.conda/

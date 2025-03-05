@@ -1,0 +1,15 @@
+name: crispr_analysis
+channels:
+  - bioconda
+  - conda-forge
+  - defaults
+dependencies:
+  - snakemake=7.32.4
+  - bbmap=39.01  # Contains BBDuk
+  - mageck=0.5.9
+  - python=3.9
+  - pandas=1.5.3
+  - matplotlib=3.7.1
+  - seaborn=0.12.2
+  - pyyaml=6.0
+  - numpy=1.24.3

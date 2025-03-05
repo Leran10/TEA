@@ -1,0 +1,65 @@
+# CRISPR screen analysis pipeline configuration
+
+# Output directory
+output_dir: "results"
+
+# Sample names (must match the prefix of your fastq files)
+samples:
+  - "Baldridge_Found_Mock_P7_KERMIT_R16_P5_ARGON_F17_GACTTGGTATTC_ACGACGTCTTAG_S1_R1_001"
+  - "Baldridge_Found_Virus-negative_P7_KERMIT_R17_P5_ARGON_F17_TACACGATCTAC_ACGACGTCTTAG_S2_R1_001"
+  - "Baldridge_Found_Virus-positive_P7_KERMIT_R18_P5_ARGON_F17_GCACACACGTTA_ACGACGTCTTAG_S3_R1_001"
+
+# Sample labels (shorter names for reporting)
+sample_labels:
+  "Baldridge_Found_Mock_P7_KERMIT_R16_P5_ARGON_F17_GACTTGGTATTC_ACGACGTCTTAG_S1_R1_001": "R16"
+  "Baldridge_Found_Virus-negative_P7_KERMIT_R17_P5_ARGON_F17_TACACGATCTAC_ACGACGTCTTAG_S2_R1_001": "R17"
+  "Baldridge_Found_Virus-positive_P7_KERMIT_R18_P5_ARGON_F17_GCACACACGTTA_ACGACGTCTTAG_S3_R1_001": "R18"
+
+# Comparisons for MAGeCK analysis
+comparisons:
+  R16vsR17: # Comparison name
+    test: "R17"  # Treatment sample
+    control: "R16"  # Control sample
+  R16vsR18:
+    test: "R18"
+    control: "R16"
+  R18vsR17:
+    test: "R17"
+    control: "R18"
+  # Example of multiple samples per group (uncomment and modify as needed)
+  # MultiSampleExample:
+  #   test: ["R17", "R18"]  # Multiple treatment samples
+  #   control: ["R16"]      # Control sample(s)
+
+# MAGeCK parameters
+mageck_fdr: 0.05                    # False discovery rate threshold
+mageck_normalization_method: "median"  # Normalization method: median, total, control
+
+# CRISPR library options - use EITHER library_name OR library_file
+# Option 1: Use a predefined library by name (from libraries/libraries.yaml)
+library_name: "CP0041_GW_KO"  # Uses vector and backbone sequences from libraries.yaml
+
+# Option 2: Direct path to library file (uncomment to use)
+# library_file: "CP0041_GW_KO_mageck.txt"
+
+# BBDuk trimming parameters
+# Sequences to be used for trimming - CUSTOMIZE THESE for your specific CRISPR construct
+vector_sequence: "GAAACACCG"      # Vector sequence for left trim
+backbone_sequence: "GTTTTAGA"     # Backbone sequence for right trim
+
+# Additional BBDuk parameters - adjust these as needed for your specific data
+bbduk_kmer_length: 8              # k-mer length for matching
+bbduk_reverse_complement: "f"     # consider reverse complement? f=false, t=true
+bbduk_mismatch: "f"               # allow mismatches? f=false, t=true
+bbduk_hamming_distance: 0         # hamming distance for fuzzy matching (0=exact match)
+bbduk_min_length: 20              # minimum length to keep after trimming
+bbduk_max_length: 20              # maximum length to keep after trimming
+
+# Computational resources
+threads:
+  bbduk: 8
+  mageck: 4
+
+memory:
+  bbduk: 128000  # 128GB
+  mageck: 60000  # 60GB
