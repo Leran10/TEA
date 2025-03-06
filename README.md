@@ -61,6 +61,17 @@ TEA (Transposable Element Analysis) processes RNA-seq data to identify different
    conda activate te_analysis
    ```
 
+4. Verify the installation:
+   ```bash
+   # Check that TEtranscripts was installed
+   TEtranscripts --version
+   
+   # Check that all other tools are available
+   STAR --version
+   RepeatMasker -h | head -n 5
+   fastqc --version
+   ```
+
 ## Quick Start
 
 1. Edit `config.yaml` to specify your samples and reference genome (see [Configuration](#configuration))

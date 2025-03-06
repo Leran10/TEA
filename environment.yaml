@@ -3,16 +3,20 @@ channels:
   - conda-forge
   - bioconda
   - defaults
+  - r
 dependencies:
   - python=3.9
   - snakemake=7.25.0
   - star=2.7.10b
   - repeatmasker=4.1.5
-  - bioconductor-tetranscripts=2.8.0
   - fastqc=0.12.1
   - multiqc=1.14
   - samtools=1.17
   - curl
   - gzip
+  - r-base
+  - bioconductor-deseq2
   - pip
+  - pip:
+      - TEtranscripts==2.2.3
   # No pip package available for rmsk2gtf, using custom script instead
