@@ -118,9 +118,17 @@ control_samples:
   - "sample6"
 ```
 
-- `samples`: List all sample IDs. Files should be named `{sample}_R1.fastq.gz` and `{sample}_R2.fastq.gz`
+- `samples`: List only the sample base names (without the _R1.fastq.gz or _R2.fastq.gz suffixes)
 - `treatment_samples`: List the sample IDs in your treatment group
 - `control_samples`: List the sample IDs in your control group
+
+For each sample in your list, you must have two paired-end FASTQ files in the `data/raw_fastq/` directory following this naming convention:
+- `{sample}_R1.fastq.gz` - First read in the pair
+- `{sample}_R2.fastq.gz` - Second read in the pair
+
+For example, if you list `tumor1` in your samples, you should have these files:
+- `data/raw_fastq/tumor1_R1.fastq.gz`
+- `data/raw_fastq/tumor1_R2.fastq.gz`
 
 Additionally, create a metadata file at `metadata/sample_info.txt` with the following format:
 ```
@@ -150,7 +158,9 @@ species: "mouse"  # for RepeatMasker
 - `gtf_file`: Full path to your gene annotation GTF file
 - `species`: Species name for RepeatMasker (should match your genome species)
 
-> **Note:** You must download and prepare these reference files yourself. Good sources include:
+> **Note:** You must download and prepare these reference files yourself. The files can be located anywhere on your system - just provide the full absolute paths in the config file.
+> 
+> Good sources for reference files include:
 > - [Gencode](https://www.gencodegenes.org/): High-quality annotations for human and mouse
 > - [Ensembl](https://www.ensembl.org/): Reference genomes and annotations for multiple species
 > - [UCSC Genome Browser](https://genome.ucsc.edu/): Various genome builds and annotations
@@ -229,7 +239,7 @@ The pipeline executes in the following sequence:
    - Specify their paths in the config.yaml file
 
 2. **STAR Indexing**
-   - Create STAR index with your provided reference genome and GTF
+   - Create STAR index with your provided reference genome and GTF files (using the paths from config.yaml)
 
 3. **RNA-seq Alignment with STAR**
    - Align reads with optimized parameters for TE detection:

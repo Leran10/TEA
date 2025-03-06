@@ -78,27 +78,28 @@ rule repeat_masker:
     input:
         genome = GENOME_PATH
     output:
-        directory("results/repeatmasker")
+        outfile = "results/repeatmasker/genome.out"
     params:
-        genome_basename = lambda wildcards, input: os.path.basename(input.genome)
+        genome_basename = lambda wildcards, input: os.path.basename(input.genome),
+        outdir = "results/repeatmasker"
     threads:
         config["threads"]["repeatmasker"]
     shell:
         """
-        mkdir -p {output}
+        mkdir -p {params.outdir}
         RepeatMasker -pa {threads} \
                      -species {config[species]} \
-                     -dir {output} \
+                     -dir {params.outdir} \
                      {input.genome}
+        # Rename output file to a fixed name for predictability
+        find {params.outdir} -name "*.out" -exec cp {{}} {output.outfile} \;
         """
 
 rule create_te_gtf:
     input:
-        rmask = "results/repeatmasker/{genome_basename}.out"
+        rmask = "results/repeatmasker/genome.out"
     output:
         te_gtf = "results/te_annotation/te.gtf"
-    params:
-        genome_basename = lambda wildcards, input: os.path.basename(input.rmask).replace(".out", "")
     shell:
         """
         python scripts/rmsk2gtf.py -i {input.rmask} -o {output.te_gtf}
