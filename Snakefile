@@ -9,6 +9,7 @@ CONTROL_SAMPLES = config["control_samples"]
 # Get reference genome and GTF paths from config
 GENOME_PATH = config["genome_fasta"]
 GTF_PATH = config["gtf_file"]
+TE_GTF_PATH = config["te_gtf_file"]  # New parameter for the fixed TE GTF file
 
 rule all:
     input:
@@ -72,36 +73,7 @@ rule star_align:
              --runThreadN {threads}
         """
 
-rule repeat_masker:
-    input:
-        genome = GENOME_PATH
-    output:
-        outfile = "results/repeatmasker/genome.out"
-    params:
-        genome_basename = lambda wildcards, input: os.path.basename(input.genome),
-        outdir = "results/repeatmasker"
-    threads:
-        config["threads"]["repeatmasker"]
-    shell:
-        """
-        mkdir -p {params.outdir}
-        RepeatMasker -pa {threads} \
-                     -species {config[species]} \
-                     -dir {params.outdir} \
-                     {input.genome}
-        # Rename output file to a fixed name for predictability
-        find {params.outdir} -name "*.out" -exec cp {{}} {output.outfile} \;
-        """
-
-rule create_te_gtf:
-    input:
-        rmask = "results/repeatmasker/genome.out"
-    output:
-        te_gtf = "results/te_annotation/te.gtf"
-    shell:
-        """
-        python scripts/rmsk2gtf.py -i {input.rmask} -o {output.te_gtf}
-        """
+# RepeatMasker and TE GTF creation steps removed - using pre-existing TE GTF file
 
 rule sort_bam:
     input:
@@ -122,7 +94,7 @@ rule tetranscripts:
         treatment_bams = expand("results/star/{sample}/Aligned.sortedByCoord.out.bam", sample=TREATMENT_SAMPLES),
         control_bams = expand("results/star/{sample}/Aligned.sortedByCoord.out.bam", sample=CONTROL_SAMPLES),
         gtf = GTF_PATH,
-        te_gtf = "results/te_annotation/te.gtf"
+        te_gtf = TE_GTF_PATH  # Use the fixed TE GTF path from config
     output:
         diff_file = "results/tetranscripts/differential_expression.tsv"
     params:

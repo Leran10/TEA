@@ -148,15 +148,12 @@ sample6     control      1
 # Specify paths to your reference genome and annotation files
 genome_fasta: "/path/to/your/genome.fa"
 gtf_file: "/path/to/your/annotation.gtf"
-
-# RepeatMasker species 
-# Common options: human, mouse, rat, mammal, etc. - see RepeatMasker documentation
-species: "mouse"  # for RepeatMasker
+te_gtf_file: "/path/to/your/te_annotation.gtf"  # Path to your pre-existing TE GTF file
 ```
 
 - `genome_fasta`: Full path to your genome FASTA file
 - `gtf_file`: Full path to your gene annotation GTF file
-- `species`: Species name for RepeatMasker (should match your genome species)
+- `te_gtf_file`: Full path to your TE annotation GTF file (pre-existing)
 
 > **Note:** You must download and prepare these reference files yourself. The files can be located anywhere on your system - just provide the full absolute paths in the config file.
 > 
@@ -235,7 +232,7 @@ You can pass any additional Snakemake arguments after the TEA options. For more 
 The pipeline executes in the following sequence:
 
 1. **Reference File Requirements**
-   - You must provide your own genome FASTA and annotation GTF files
+   - You must provide your own genome FASTA, gene annotation GTF, and TE annotation GTF files
    - Specify their paths in the config.yaml file
 
 2. **STAR Indexing**
@@ -260,20 +257,13 @@ The pipeline executes in the following sequence:
 4. **BAM Processing**
    - Sort and index BAM files using samtools
 
-5. **RepeatMasker Analysis**
-   - Run RepeatMasker on the reference genome to identify repetitive elements
-   - Convert RepeatMasker output to GTF format for TEtranscripts
-
-6. **TEtranscripts Differential Expression Analysis**
+5. **TEtranscripts Differential Expression Analysis**
    - Compare treatment vs control samples directly using the DESeq method
    - Uses the following inputs:
      - Sorted BAM files (treatment and control)
-     - Gene annotation GTF
-     - TE annotation GTF (derived from RepeatMasker)
+     - Gene annotation GTF 
+     - TE annotation GTF (pre-existing file specified in config.yaml)
 
-7. **Quality Control**
-   - Run FastQC on raw input data
-   - Generate MultiQC report summarizing all QC metrics
 
 ## Output Files
 
@@ -286,23 +276,14 @@ The pipeline generates the following outputs:
   - `results/star/{sample}/Aligned.sortedByCoord.out.bam.bai`: BAM index files
   - `results/star/{sample}/Log.final.out`: Alignment statistics
 
-- **RepeatMasker**:
-  - `results/repeatmasker/`: RepeatMasker output files
-  - `results/te_annotation/te.gtf`: TE annotation in GTF format
-
 - **TEtranscripts**:
   - `results/tetranscripts/differential_expression.tsv`: Differential expression results
   - `results/tetranscripts/`: Various additional output files from TEtranscripts
 
-- **Quality Control**:
-  - `results/qc/fastqc/`: Individual FastQC reports
-  - `results/qc/multiqc_report.html`: Combined MultiQC report
-
 ## Troubleshooting
 
 - **STAR indexing fails**: Check memory requirements; STAR indexing can require substantial memory.
-- **RepeatMasker errors**: Ensure the correct species is specified in config.yaml.
-- **Reference file errors**: Verify that your genome_fasta and gtf_file paths in config.yaml are correct and the files exist.
+- **Reference file errors**: Verify that your genome_fasta, gtf_file, and te_gtf_file paths in config.yaml are correct and the files exist.
 - **TEtranscripts fails**: Check that your FASTQ files are properly formatted and named.
 - **Installation issues**: If you encounter "disk quota exceeded" or memory errors:
   - Use the minimal installation option in the Installation section
