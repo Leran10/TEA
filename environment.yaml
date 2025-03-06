@@ -1,15 +1,18 @@
 name: te_analysis
 channels:
-  - bioconda
   - conda-forge
+  - bioconda
   - defaults
 dependencies:
-  - snakemake=7.32.4
+  - python=3.9
+  - snakemake=7.25.0
   - star=2.7.10b
   - repeatmasker=4.1.5
-  - samtools=1.18
+  - bioconductor-tetranscripts=2.8.0
+  - fastqc=0.12.1
   - multiqc=1.14
-  - python=3.10
-  - pip=23.0.1
-  - pip:
-    - TEtranscripts==2.2.3
+  - samtools=1.17
+  - curl
+  - gzip
+  - pip
+  # No pip package available for rmsk2gtf, using custom script instead

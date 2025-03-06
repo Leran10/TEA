@@ -1,0 +1,7 @@
+SampleID	Condition	Batch
+sample1	control	1
+sample2	treatment	1
+sample3	treatment	1
+sample4	control	1
+sample5	treatment	1
+sample6	control	1
