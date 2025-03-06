@@ -1,0 +1,18 @@
+#!/bin/sh
+
+# run_mageck.sbatch
+
+#SBATCH --cpus-per-task=4
+#SBATCH --mem=60G
+#SBATCH -J run_mageck
+#SBATCH --mail-user=leranwang
+#SBATCH --mail-type=ALL
+
+module load mageck
+
+        
+mageck count -l CP0041_GW_KO_mageck.txt -n Jerome_GW_Mageck --sample-label R16,R17,R18 --fastq Baldridge_Found_Mock_P7_KERMIT_R16_P5_ARGON_F17_GACTTGGTATTC_ACGACGTCTTAG_S1_R1_001_rtrim.fastq Baldridge_Found_Virus-negative_P7_KERMIT_R17_P5_ARGON_F17_TACACGATCTAC_ACGACGTCTTAG_S2_R1_001_rtrim.fastq Baldridge_Found_Virus-positive_P7_KERMIT_R18_P5_ARGON_F17_GCACACACGTTA_ACGACGTCTTAG_S3_R1_001_rtrim.fastq
+
+mageck test -k Jerome_GW_Mageck.count.txt -t R17 -c R16 -n R16vsR17
+mageck test -k Jerome_GW_Mageck.count.txt -t R18 -c R16 -n R16vsR18
+mageck test -k Jerome_GW_Mageck.count.txt -t R17 -c R18 -n R18vsR17

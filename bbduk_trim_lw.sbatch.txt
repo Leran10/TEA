@@ -1,0 +1,49 @@
+#!/bin/bash
+
+# bbduk trim.sbatch
+
+#SBATCH --constraint=cpu_E52650
+#SBATCH --cpus-per-task=8
+#SBATCH --mem=128G
+#SBATCH --array=1-3
+#SBATCH -J bbduk
+#SBATCH --mail-user=leranwang
+#SBATCH --mail-type=ALL
+
+
+set -ue
+
+source /opt/apps/labs/sahlab/software/miniconda3/bin/activate
+conda activate /opt/apps/labs/sahlab/software/miniconda3/envs/bbtools
+
+outfolder="./bbduk_output3"
+mkdir -p "$outfolder"
+mkdir -p "$outfolder""/logs/"
+
+ls *.fastq > lookup.txt
+
+read1=$(sed -n ${SLURM_ARRAY_TASK_ID}p lookup.txt)
+
+sample=$(echo ${read1} | sed s/.fastq//g)
+
+
+vector="GAAACACCG"
+backbone="GTTTTAGA"
+
+
+lfilter="$outfolder"'/'"$sample"'_lfilter.fastq'
+ltrim="$outfolder"'/'"$sample"'_ltrim.fastq'
+rfilter="$outfolder"'/'"$sample"'_rfilter.fastq'
+rtrim="$outfolder"'/'"$sample"'_rtrim.fastq'
+rtrim_miss="$outfolder"'/'"$sample"'_rtrim_miss.fastq'
+
+
+echo 'lfilter'
+bbduk.sh in=${sample}.fastq  outm="$lfilter" literal="$vector" k=8 rcomp=f mm=f hdist=0 2> "$outfolder"'/logs/'"$sample"'_lfilter_log.txt'
+echo 'ltrim'
+bbduk.sh in="$lfilter" out="$ltrim" literal="$vector" ktrim=l k=8 rcomp=f hdist=0 2> "$outfolder"'/logs/'"$sample"'_ltrim_log.txt'
+echo 'rfilter'
+bbduk.sh in="$ltrim" outm="$rfilter" literal="$backbone" k=8 rcomp=f mm=f hdist=0 2> "$outfolder"'/logs/'"$sample"'_rfilter_log.txt'
+echo 'rtrim'
+bbduk.sh in="$rfilter" out="$rtrim" outm="$rtrim_miss" literal="$backbone" ktrim=r k=8 rcomp=f hdist=0 ml=20 maxLength=20 2> "$outfolder"'/logs/'"$sample"'_rtrim_log.txt'
+
