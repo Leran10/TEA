@@ -51,14 +51,24 @@ TEA (Transposable Element Analysis) processes RNA-seq data to identify different
    cd TEA
    ```
 
-2. Create the conda environment:
+2. Create a minimal conda environment (to avoid disk quota issues):
    ```bash
+   # Option 1: Create the full environment (may require significant disk space)
    conda env create -f environment.yaml
+   
+   # Option 2: Create a minimal environment on systems with limited space
+   conda create -n te_minimal python=3.9 snakemake star repeatmasker fastqc samtools pip
+   conda activate te_minimal
+   pip install TEtranscripts==2.2.3
    ```
 
 3. Activate the environment:
    ```bash
+   # If using the full environment
    conda activate te_analysis
+   
+   # Or if using the minimal environment
+   conda activate te_minimal
    ```
 
 4. Verify the installation:
@@ -284,12 +294,11 @@ The pipeline generates the following outputs:
 - **RepeatMasker errors**: Ensure the correct species is specified in config.yaml.
 - **Reference file errors**: Verify that your genome_fasta and gtf_file paths in config.yaml are correct and the files exist.
 - **TEtranscripts fails**: Check that your FASTQ files are properly formatted and named.
-- **Installation issues**: If you encounter "disk quota exceeded" or memory errors during installation, try installing just the essential packages:
-  ```bash
-  conda create -n te_minimal python=3.9 snakemake star repeatmasker samtools fastqc
-  conda activate te_minimal
-  pip install TEtranscripts==2.2.3
-  ```
+- **Installation issues**: If you encounter "disk quota exceeded" or memory errors:
+  - Use the minimal installation option in the Installation section
+  - Avoid R/Bioconductor packages which can be large
+  - Install packages one by one to identify problematic dependencies
+  - Use mamba instead of conda for more efficient package resolution: `mamba create -n te_minimal ...`
 
 For more detailed troubleshooting, check the log files in the relevant output directories.
 

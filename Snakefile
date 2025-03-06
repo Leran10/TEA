@@ -134,6 +134,22 @@ rule tetranscripts:
         """
         mkdir -p {params.outdir}
         
+        # Ensure all input files exist
+        for file in {input.treatment_bams} {input.control_bams}; do
+            if [ ! -f "$file" ]; then
+                echo "ERROR: Input BAM file $file does not exist!"
+                exit 1
+            fi
+        done
+        if [ ! -f "{input.gtf}" ]; then
+            echo "ERROR: GTF file {input.gtf} does not exist!"
+            exit 1
+        fi
+        if [ ! -f "{input.te_gtf}" ]; then
+            echo "ERROR: TE GTF file {input.te_gtf} does not exist!"
+            exit 1
+        fi
+        
         TEtranscripts \
             -t {input.treatment_bams} \
             -c {input.control_bams} \

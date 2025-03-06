@@ -11,9 +11,6 @@ dependencies:
   - fastqc=0.12.1
   - multiqc=1.14
   - samtools=1.17
-  - r-base=4.2
-  - r-tidyverse
-  - bioconductor-deseq2
   - pip
   - pip:
       - TEtranscripts==2.2.3
