@@ -14,8 +14,6 @@ rule all:
     input:
         # Final output: TEtranscripts differential expression analysis
         "results/tetranscripts/differential_expression.tsv",
-        # Quality control reports
-        expand("results/qc/multiqc_report.html"),
         # Ensure all BAM files are properly sorted and indexed
         expand("results/star/{sample}/Aligned.sortedByCoord.out.bam.bai", sample=SAMPLES)
 
@@ -163,28 +161,4 @@ rule tetranscripts:
             --project differential_expression
         """
 
-rule fastqc:
-    input:
-        r1 = "data/raw_fastq/{sample}_R1.fastq.gz",
-        r2 = "data/raw_fastq/{sample}_R2.fastq.gz"
-    output:
-        r1_html = "results/qc/fastqc/{sample}_R1_fastqc.html",
-        r2_html = "results/qc/fastqc/{sample}_R2_fastqc.html"
-    threads: 2
-    shell:
-        """
-        mkdir -p results/qc/fastqc
-        fastqc -o results/qc/fastqc -t {threads} {input.r1} {input.r2}
-        """
-
-rule multiqc:
-    input:
-        fastqc = expand(["results/qc/fastqc/{sample}_R1_fastqc.html", 
-                         "results/qc/fastqc/{sample}_R2_fastqc.html"], sample=SAMPLES),
-        star_logs = expand("results/star/{sample}/Log.final.out", sample=SAMPLES)
-    output:
-        "results/qc/multiqc_report.html"
-    shell:
-        """
-        multiqc results/ -o results/qc
-        """
+# Quality control rules removed

@@ -27,7 +27,8 @@ gtf_file: "/path/to/your/annotation.gtf"
 
 # RepeatMasker species 
 # Common options: human, mouse, rat, mammal, etc. - see RepeatMasker documentation
-species: "mouse"  # for RepeatMasker
+# If you get an error with one species, try another from this list
+species: "mouse"  # Can also try: "Mus", "Rodentia", or "mammal" if "mouse" doesn't work
 
 # Computational resources
 threads:
