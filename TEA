@@ -1,0 +1,84 @@
+#!/bin/bash
+# TEA - Transposable Element Analysis Pipeline
+# Wrapper script to run the Snakemake workflow
+
+# Set script directory
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+cd "$SCRIPT_DIR"
+
+# Function to display help message
+show_help() {
+    echo "TEA - Transposable Element Analysis Pipeline"
+    echo
+    echo "Usage:"
+    echo "  TEA [options] [snakemake_args]"
+    echo
+    echo "Options:"
+    echo "  -h, --help       Show this help message and exit"
+    echo "  -n, --dry-run    Perform a dry run (no actual execution)"
+    echo "  -c, --cores N    Specify number of cores to use (default: 1)"
+    echo "  --profile NAME   Use the specified Snakemake profile"
+    echo "  --configfile FILE Use the specified config file instead of default"
+    echo
+    echo "Examples:"
+    echo "  TEA -c 16                 # Run pipeline with 16 cores"
+    echo "  TEA -n                    # Perform a dry run"
+    echo "  TEA --profile slurm       # Run on a SLURM cluster"
+    echo "  TEA target_file.bam       # Run for a specific target"
+    echo
+    echo "Any additional arguments will be passed directly to Snakemake."
+}
+
+# Check if conda environment is active
+if [ -z "$CONDA_DEFAULT_ENV" ] || [ "$CONDA_DEFAULT_ENV" != "te_analysis" ]; then
+    echo "Warning: te_analysis conda environment is not active."
+    echo "It's recommended to run: conda activate te_analysis"
+    echo "Continuing anyway..."
+    echo
+fi
+
+# Default parameters
+CORES=1
+SNAKEMAKE_ARGS=()
+
+# Parse arguments
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        -h|--help)
+            show_help
+            exit 0
+            ;;
+        -n|--dry-run)
+            SNAKEMAKE_ARGS+=("--dry-run")
+            shift
+            ;;
+        -c|--cores)
+            CORES="$2"
+            shift 2
+            ;;
+        --profile)
+            SNAKEMAKE_ARGS+=("--profile" "$2")
+            shift 2
+            ;;
+        --configfile)
+            SNAKEMAKE_ARGS+=("--configfile" "$2")
+            shift 2
+            ;;
+        *)
+            SNAKEMAKE_ARGS+=("$1")
+            shift
+            ;;
+    esac
+done
+
+# Run Snakemake
+echo "Running TEA pipeline with $CORES cores..."
+snakemake --cores "$CORES" "${SNAKEMAKE_ARGS[@]}"
+
+# Check exit status
+if [ $? -eq 0 ]; then
+    echo "TEA pipeline completed successfully."
+else
+    echo "TEA pipeline failed with an error."
+    exit 1
+fi

@@ -67,7 +67,7 @@ TEA (Transposable Element Analysis) processes RNA-seq data to identify different
 2. Place your paired-end FASTQ files in `data/raw_fastq/` with naming convention: `{sample}_R1.fastq.gz` and `{sample}_R2.fastq.gz`
 3. Run the pipeline:
    ```bash
-   snakemake --cores 16
+   ./TEA -c 16
    ```
 
 ## Configuration
@@ -159,7 +159,23 @@ Adjust threads based on your available computing resources.
 After configuring `config.yaml` and placing your FASTQ files in the correct location:
 
 ```bash
-snakemake --cores <number_of_cores>
+./TEA -c <number_of_cores>
+```
+
+### Command-line Options
+
+The `TEA` command provides a convenient wrapper around Snakemake with the following options:
+
+```
+Usage:
+  TEA [options] [snakemake_args]
+
+Options:
+  -h, --help       Show help message and exit
+  -n, --dry-run    Perform a dry run (no actual execution)
+  -c, --cores N    Specify number of cores to use (default: 1)
+  --profile NAME   Use the specified Snakemake profile
+  --configfile FILE Use the specified config file instead of default
 ```
 
 ### Dry Run
@@ -167,25 +183,25 @@ snakemake --cores <number_of_cores>
 To check the workflow without executing any commands:
 
 ```bash
-snakemake -n
+./TEA -n
 ```
 
-### Advanced Options
+### Advanced Usage
 
 Run a specific part of the pipeline:
 
 ```bash
 # Run only up to the STAR alignment
-snakemake --cores 16 results/star/{sample}/Aligned.sortedByCoord.out.bam
+./TEA -c 16 results/star/{sample}/Aligned.sortedByCoord.out.bam
 ```
 
 Run with a cluster/HPC system:
 
 ```bash
-snakemake --profile slurm
+./TEA --profile slurm
 ```
 
-For more advanced Snakemake options, see the [Snakemake documentation](https://snakemake.readthedocs.io/).
+You can pass any additional Snakemake arguments after the TEA options. For more advanced Snakemake options, see the [Snakemake documentation](https://snakemake.readthedocs.io/).
 
 ## Pipeline Steps
 
