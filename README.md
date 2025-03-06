@@ -127,27 +127,23 @@ sample6     control      1
 
 ```yaml
 # Reference files
-# Available options: "GRCh38", "GRCh37", "GRCm39", "GRCm38", "custom"
-genome_build: "GRCm39"
-
-# If using custom genome, specify paths here (ignored if using predefined genome)
-custom_genome: "/path/to/custom/genome.fa"
-custom_gtf: "/path/to/custom/genes.gtf"
-
-# Directory to store reference files
-reference_dir: "resources/references"
+# Specify paths to your reference genome and annotation files
+genome_fasta: "/path/to/your/genome.fa"
+gtf_file: "/path/to/your/annotation.gtf"
 
 # RepeatMasker species 
 # Common options: human, mouse, rat, mammal, etc. - see RepeatMasker documentation
 species: "mouse"  # for RepeatMasker
 ```
 
-- `genome_build`: Choose from predefined Gencode genome builds: "GRCh38" (human), "GRCh37" (human), "GRCm39" (mouse), "GRCm38" (mouse), or "custom"
-- For `custom` genome builds, specify:
-  - `custom_genome`: Full path to your custom genome FASTA file
-  - `custom_gtf`: Full path to your custom gene annotation GTF file
-- `reference_dir`: Directory where downloaded reference files will be stored
+- `genome_fasta`: Full path to your genome FASTA file
+- `gtf_file`: Full path to your gene annotation GTF file
 - `species`: Species name for RepeatMasker (should match your genome species)
+
+> **Note:** You must download and prepare these reference files yourself. Good sources include:
+> - [Gencode](https://www.gencodegenes.org/): High-quality annotations for human and mouse
+> - [Ensembl](https://www.ensembl.org/): Reference genomes and annotations for multiple species
+> - [UCSC Genome Browser](https://genome.ucsc.edu/): Various genome builds and annotations
 
 ### Computational Resources
 
@@ -218,12 +214,12 @@ You can pass any additional Snakemake arguments after the TEA options. For more 
 
 The pipeline executes in the following sequence:
 
-1. **Reference Genome Preparation**
-   - Download reference genome FASTA and annotation GTF from Gencode (if using predefined genomes)
-   - Use custom genome and GTF files (if configured)
+1. **Reference File Requirements**
+   - You must provide your own genome FASTA and annotation GTF files
+   - Specify their paths in the config.yaml file
 
 2. **STAR Indexing**
-   - Create STAR index with the provided reference genome and GTF
+   - Create STAR index with your provided reference genome and GTF
 
 3. **RNA-seq Alignment with STAR**
    - Align reads with optimized parameters for TE detection:
@@ -286,8 +282,14 @@ The pipeline generates the following outputs:
 
 - **STAR indexing fails**: Check memory requirements; STAR indexing can require substantial memory.
 - **RepeatMasker errors**: Ensure the correct species is specified in config.yaml.
+- **Reference file errors**: Verify that your genome_fasta and gtf_file paths in config.yaml are correct and the files exist.
 - **TEtranscripts fails**: Check that your FASTQ files are properly formatted and named.
-- **Missing dependencies**: Ensure all tools are installed through the provided environment.yaml file.
+- **Installation issues**: If you encounter "disk quota exceeded" or memory errors during installation, try installing just the essential packages:
+  ```bash
+  conda create -n te_minimal python=3.9 snakemake star repeatmasker samtools fastqc
+  conda activate te_minimal
+  pip install TEtranscripts==2.2.3
+  ```
 
 For more detailed troubleshooting, check the log files in the relevant output directories.
 

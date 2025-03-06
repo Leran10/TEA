@@ -3,7 +3,6 @@ channels:
   - conda-forge
   - bioconda
   - defaults
-  - r
 dependencies:
   - python=3.9
   - snakemake=7.25.0
@@ -12,9 +11,8 @@ dependencies:
   - fastqc=0.12.1
   - multiqc=1.14
   - samtools=1.17
-  - curl
-  - gzip
-  - r-base
+  - r-base=4.2
+  - r-tidyverse
   - bioconductor-deseq2
   - pip
   - pip:

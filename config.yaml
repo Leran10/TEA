@@ -21,15 +21,9 @@ control_samples:
 batch_var: "batch"
 
 # Reference files
-# Available options: "GRCh38", "GRCh37", "GRCm39", "GRCm38", "custom"
-genome_build: "GRCm39"
-
-# If using custom genome, specify paths here (ignored if using predefined genome)
-custom_genome: "/path/to/custom/genome.fa"
-custom_gtf: "/path/to/custom/genes.gtf"
-
-# Directory to store reference files
-reference_dir: "resources/references"
+# Specify paths to your reference genome and annotation files
+genome_fasta: "/path/to/your/genome.fa"
+gtf_file: "/path/to/your/annotation.gtf"
 
 # RepeatMasker species 
 # Common options: human, mouse, rat, mammal, etc. - see RepeatMasker documentation

@@ -6,32 +6,9 @@ SAMPLES = config["samples"]
 TREATMENT_SAMPLES = config["treatment_samples"]
 CONTROL_SAMPLES = config["control_samples"]
 
-# Genome build configuration
-GENOME_BUILD = config["genome_build"]
-REFERENCE_DIR = config["reference_dir"]
-
-# Predefined genome and GTF URLs from Gencode
-GENOME_URLS = {
-    "GRCh38": "https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_44/GRCh38.primary_assembly.genome.fa.gz",
-    "GRCh37": "https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_19/GRCh37.primary_assembly.genome.fa.gz",
-    "GRCm39": "https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_mouse/release_M33/GRCm39.primary_assembly.genome.fa.gz",
-    "GRCm38": "https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_mouse/release_M25/GRCm38.primary_assembly.genome.fa.gz"
-}
-
-GTF_URLS = {
-    "GRCh38": "https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_44/gencode.v44.primary_assembly.annotation.gtf.gz",
-    "GRCh37": "https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_19/gencode.v19.annotation.gtf.gz",
-    "GRCm39": "https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_mouse/release_M33/gencode.vM33.primary_assembly.annotation.gtf.gz",
-    "GRCm38": "https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_mouse/release_M25/gencode.vM25.primary_assembly.annotation.gtf.gz"
-}
-
-# Determine genome and gtf paths based on config
-if GENOME_BUILD == "custom":
-    GENOME_PATH = config["custom_genome"]
-    GTF_PATH = config["custom_gtf"]
-else:
-    GENOME_PATH = f"{REFERENCE_DIR}/{GENOME_BUILD}/{GENOME_BUILD}.fa"
-    GTF_PATH = f"{REFERENCE_DIR}/{GENOME_BUILD}/annotation.gtf"
+# Get reference genome and GTF paths from config
+GENOME_PATH = config["genome_fasta"]
+GTF_PATH = config["gtf_file"]
 
 rule all:
     input:
@@ -42,33 +19,7 @@ rule all:
         # Ensure all BAM files are properly sorted and indexed
         expand("results/star/{sample}/Aligned.sortedByCoord.out.bam.bai", sample=SAMPLES)
 
-rule download_genome:
-    output:
-        genome = GENOME_PATH
-    params:
-        url = GENOME_URLS.get(GENOME_BUILD, ""),
-        outdir = lambda wildcards, output: os.path.dirname(output.genome)
-    shell:
-        """
-        mkdir -p {params.outdir}
-        if [ "{GENOME_BUILD}" != "custom" ]; then
-            curl -L {params.url} | gunzip -c > {output.genome}
-        fi
-        """
-
-rule download_gtf:
-    output:
-        gtf = GTF_PATH
-    params:
-        url = GTF_URLS.get(GENOME_BUILD, ""),
-        outdir = lambda wildcards, output: os.path.dirname(output.gtf)
-    shell:
-        """
-        mkdir -p {params.outdir}
-        if [ "{GENOME_BUILD}" != "custom" ]; then
-            curl -L {params.url} | gunzip -c > {output.gtf}
-        fi
-        """
+# No download rules - user provides their own genome and GTF files
 
 rule star_index:
     input:
